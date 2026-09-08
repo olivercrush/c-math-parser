@@ -2,13 +2,8 @@
 CXX	:= clang++
 CC	:= clang
 
-# -g3 emits DWARF (required by lldb-dap for breakpoints), -O0 keeps
-# line numbers and locals from being optimised away while stepping.
 CFLAGS	:= -Wall -Wshadow -Iinclude --std=c23 -g3 -O0
 
-# The nix cc-wrapper appends -D_FORTIFY_SOURCE=2 after our own flags (so
-# -U_FORTIFY_SOURCE can't win), and fortify warns on every translation unit
-# at -O0. Turning the hardening off is the wrapper's supported escape hatch.
 export NIX_HARDENING_ENABLE :=
 
 # output --------------------------------------------------------------------@/
@@ -27,9 +22,6 @@ OBJS += $(subst $(SRC_DIR),$(OBJ_DIR),$(SRCS_CPP:.cpp=.o))
 # building ------------------------------------------------------------------@/
 all: $(OUTPUT)
 
-# bin/ and build/ are gitignored, so they must be recreated on a fresh
-# clone. Order-only prerequisites (after the |) so a new object file
-# landing in build/ doesn't relink everything.
 $(OUTPUT): $(OBJS) | $(BIN_DIR)
 	$(CXX) $(CFLAGS) $^ -o $@
 
