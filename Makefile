@@ -4,7 +4,7 @@ CC	:= clang
 
 # -g3 emits DWARF (required by lldb-dap for breakpoints), -O0 keeps
 # line numbers and locals from being optimised away while stepping.
-CFLAGS	:= -Wall -Wshadow -Iinclude --std=c23 -g3 -O0
+CFLAGS	:= -Wall -Wshadow -Iinclude --std=c23 -g3 -O0 -fsanitize=address,undefined -fno-omit-frame-pointer
 
 # The nix cc-wrapper appends -D_FORTIFY_SOURCE=2 after our own flags (so
 # -U_FORTIFY_SOURCE can't win), and fortify warns on every translation unit
