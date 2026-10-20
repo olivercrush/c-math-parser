@@ -11,30 +11,9 @@ enum {
 };
 
 Node* node_build_tree(TokenList tokenList) {
-
-    // EX: 5 + 3 * 8 - 2 + 8 / 4
-    // ROOT: 5 + A - 2 + B
-    // A = 3 * 8, B = 8 / 4
-
-    // Find chains of * and / 
-
-    // Read 5, OK
-    // Read +, OK
-    // Read 3, OK
-    // Read *, start expression A with 3 and *
-    // Read 8, put in expression
-    // Read -, end expression A
-    // Read 2, OK
-    // Read +, OK
-    // Read 8, OK
-    // Read /, start expression B with 8 and /
-    // Read 4, put in expression
-    // End expression B
-    // Chain nodes 5, +, A, -, 2, +, B
-
-
     Node* root = node_create(EXPRESSION, -1);
     Node* current_expression = root;
+
     for (int i = 0; i < tokenList.count; i++) {
         char* token = tokenList.tokens[i];
 
@@ -45,7 +24,7 @@ Node* node_build_tree(TokenList tokenList) {
             if (i + 1 < tokenList.count) {
                 char* next_op_token = tokenList.tokens[i+1];
                 int next_op_id = operation_get_id(next_op_token[0]);
-                if (next_op_id == MULTIPLY || next_op_id == DIVIDE) {
+                if (current_expression == root && (next_op_id == MULTIPLY || next_op_id == DIVIDE)) {
                     Node* expression = node_create(EXPRESSION, -1);
                     node_add_child(root, expression);
                     current_expression = expression;
@@ -95,14 +74,14 @@ void node_print(Node* node) {
         printf("(");
         for (int i = 0; i < node->children_count; i++)
             node_print(node->children[i]);
-        printf(") ");
+        printf(")");
     }
 
     if (node->type == TERM)
-        printf("%d ", node->data);
+        printf("%d", node->data);
 
     if (node->type == OPERATION)
-        printf("%c ", operation_get_char(node->data));
+        printf(" %c ", operation_get_char(node->data));
 }
 
 void node_free(Node* node) {

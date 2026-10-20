@@ -2,7 +2,7 @@
 #include "../include/node.h"
 
 int main() {
-    char expression[] = "1 * 600 / 3 + 84 - 69 * 43 + 709";
+    char expression[] = "4 * 600 / 3 + 84 - 69 * 43 + 709";
 
     TokenList token_list = token_get_from_string(expression);
     //token_print(token_list);
