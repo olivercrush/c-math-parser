@@ -1,6 +1,5 @@
 #include "../include/node.h"
 #include "../include/operation.h"
-#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -54,6 +53,53 @@ Node* node_create(int type, int data) {
     node->children_capacity = 0;
     node->children = NULL;
     return node;
+}
+
+float calculate_expression(Node* node) {
+    if (node->type != EXPRESSION) {
+        printf("calculate_expression: passed node is not an expression\n");
+        return 0;
+    }
+
+    float result;
+    Node* first_child = node->children[0];
+    if (first_child->type == TERM)
+        result = (float) first_child->data;
+    else if (first_child->type == EXPRESSION)
+        result = calculate_expression(first_child);
+
+    int current_operation_id = NO_OP;
+    for (int i = 1; i < node->children_count; i++) {
+        Node* child = node->children[i];
+
+        if (child->type == OPERATION) {
+            current_operation_id = child->data;
+            continue;
+        }
+
+        float new_term;
+        if (child->type == TERM)
+            new_term = (float) child->data;
+        else if (child->type == EXPRESSION)
+            new_term = calculate_expression(child);
+
+        switch (current_operation_id) {
+            case ADD:
+                result += new_term;
+                break;
+            case SUBSTRACT:
+                result -= new_term;
+                break;
+            case MULTIPLY:
+                result *= new_term;
+                break;
+            case DIVIDE:
+                result /= new_term;
+                break;
+        }
+    }
+
+    return result;
 }
 
 void node_add_child(Node* parent, Node* child) {

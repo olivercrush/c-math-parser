@@ -10,6 +10,7 @@ typedef struct Node {
 
 Node* node_build_tree(TokenList tokenList);
 Node* node_create(int type, int data);
+float calculate_expression(Node* node);
 void node_add_child(Node* parent, Node* child);
 void node_print(Node* root);
 void node_free(Node* root);
